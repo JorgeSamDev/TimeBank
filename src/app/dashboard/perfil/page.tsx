@@ -1,9 +1,17 @@
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getMyPublicProfile } from '@/features/profile/actions/profile.actions';
+import { getCurrentUser } from '@/lib/supabase/auth';
+import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
 
 export default async function EditProfilePage() {
-  const profile = await getMyPublicProfile();
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  const profile = await getMyProfile();
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10">
@@ -12,13 +20,12 @@ export default async function EditProfilePage() {
         <p className="text-sm text-muted-foreground">
           Así te verán los demás usuarios de TimeBank.
         </p>
-        {profile && (
+        {profile?.username && (
           <Link href={`/perfil/${profile.username}`} className="text-sm underline">
             Ver mi perfil público
           </Link>
         )}
       </div>
-
       <EditProfileForm initialProfile={profile} />
     </div>
   );

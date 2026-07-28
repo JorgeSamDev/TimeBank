@@ -1,34 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { upsertPublicProfile } from '../actions/profile.actions';
-import { publicProfileFormSchema, type PublicProfileFormInput } from '../schemas/profile.schema';
+import { updateProfile } from '../actions/profile.actions';
+import { editProfileSchema, type EditProfileInput } from '../schemas/profile.schema';
 import type { PublicProfile } from '../types';
 
 // El form maneja "skills" como texto separado por comas para simplificar la UI,
 // y lo convierte a array antes de mandarlo al schema/action.
-type FormValues = PublicProfileFormInput;
+type FormValues = Omit<EditProfileInput, 'skills'> & { skills: string };
 
 export function EditProfileForm({ initialProfile }: { initialProfile: PublicProfile | null }) {
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const { control, handleSubmit, formState } = useForm<FormValues>({
-    resolver: zodResolver(publicProfileFormSchema),
     defaultValues: {
       username: initialProfile?.username ?? '',
+      fullName: initialProfile?.fullName ?? '',
       bio: initialProfile?.bio ?? '',
       city: initialProfile?.city ?? '',
-      avatarUrl: initialProfile?.avatarUrl ?? '',
-      skillsText: initialProfile?.skills?.join(', ') ?? '',
+      skills: initialProfile?.skills.join(', ') ?? '',
     },
   });
 
@@ -36,26 +32,26 @@ export function EditProfileForm({ initialProfile }: { initialProfile: PublicProf
     setServerError(null);
     setSuccess(false);
 
-    const skills = data.skillsText
+    const skillsArray = data.skills
       .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+      .map((s: string) => s.trim())
+      .filter((s: string) => s.length > 0);
 
-    const result = await upsertPublicProfile({
-      username: data.username,
-      bio: data.bio,
-      city: data.city,
-      avatarUrl: data.avatarUrl,
-      skills,
-    });
+    const parsed = editProfileSchema.safeParse({ ...data, skills: skillsArray });
+
+    if (!parsed.success) {
+      setServerError('Revisa los datos ingresados.');
+      return;
+    }
+
+    const result = await updateProfile(parsed.data);
 
     if (!result.success) {
-      setServerError(result.error ?? 'Ocurrió un error al guardar tu perfil.');
+      setServerError(result.error ?? 'Ocurrió un error al guardar.');
       return;
     }
 
     setSuccess(true);
-    router.refresh();
   }
 
   return (
@@ -67,34 +63,20 @@ export function EditProfileForm({ initialProfile }: { initialProfile: PublicProf
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="username">Nombre de usuario</FieldLabel>
-              <Input {...field} id="username" placeholder="ej. juanperez" aria-invalid={fieldState.invalid} />
-              <FieldDescription>
-                Así se verá tu URL: /perfil/{field.value || 'tu-usuario'}
-              </FieldDescription>
+              <Input {...field} id="username" aria-invalid={fieldState.invalid} />
+              <FieldDescription>Se usa en tu URL pública: /perfil/tu-usuario</FieldDescription>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         <Controller
-          name="avatarUrl"
+          name="fullName"
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="avatarUrl">URL de foto de perfil</FieldLabel>
-              <Input {...field} id="avatarUrl" placeholder="https://..." aria-invalid={fieldState.invalid} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          name="city"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="city">Ciudad</FieldLabel>
-              <Input {...field} id="city" placeholder="ej. Toluca, México" aria-invalid={fieldState.invalid} />
+              <FieldLabel htmlFor="fullName">Nombre completo</FieldLabel>
+              <Input {...field} id="fullName" aria-invalid={fieldState.invalid} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -106,30 +88,42 @@ export function EditProfileForm({ initialProfile }: { initialProfile: PublicProf
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="bio">Biografía</FieldLabel>
-              <Textarea {...field} id="bio" placeholder="Cuéntale a la comunidad sobre ti" aria-invalid={fieldState.invalid} />
+              <Textarea {...field} id="bio" aria-invalid={fieldState.invalid} rows={4} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         <Controller
-          name="skillsText"
+          name="city"
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="skillsText">Habilidades</FieldLabel>
-              <Input {...field} id="skillsText" placeholder="ej. plomería, clases de guitarra, diseño" />
-              <FieldDescription>Sepáralas con comas.</FieldDescription>
+              <FieldLabel htmlFor="city">Ciudad</FieldLabel>
+              <Input {...field} id="city" aria-invalid={fieldState.invalid} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="skills"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="skills">Habilidades</FieldLabel>
+              <Input {...field} id="skills" aria-invalid={fieldState.invalid} />
+              <FieldDescription>Sepáralas con comas, ej: guitarra, cocina, inglés</FieldDescription>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
-        {success && <p className="text-sm text-emerald-600">¡Perfil guardado!</p>}
+        {success && <p className="text-sm text-emerald-600">Perfil actualizado correctamente.</p>}
 
         <Button type="submit" disabled={formState.isSubmitting}>
-          {formState.isSubmitting ? 'Guardando...' : 'Guardar perfil'}
+          {formState.isSubmitting ? 'Guardando...' : 'Guardar cambios'}
         </Button>
       </FieldGroup>
     </form>
