@@ -751,9 +751,62 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: transparent;
   }
   html {
     @apply font-sans;
   }
+}
+:root {
+  --tb-void: #0b0b12;
+  --tb-glow: #a153ee;
+  --tb-deep: #5a2498;
+  --tb-bridge: #7c3fc4;
+  --tb-ember: #ff9d6c;
+  --tb-paper: #f6f5f6;
+  --tb-mist: #c9c3d9;
+}
+
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--tb-void);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 20%, var(--tb-glow) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 15%, var(--tb-bridge) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 60% at 50% 90%, var(--tb-deep) 0%, transparent 60%);
+  background-repeat: no-repeat;
+  opacity: 0.55;
+  filter: blur(80px);
+  animation: mesh-drift 24s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-drift {
+  0% {
+    background-position:
+      20% 20%,
+      80% 15%,
+      50% 90%;
+  }
+  100% {
+    background-position:
+      30% 30%,
+      65% 25%,
+      40% 80%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-mesh {
+    animation: none;
+  }
+}
+
+.glass {
+  background-color: rgb(255 255 255 / 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgb(255 255 255 / 0.12);
 }
