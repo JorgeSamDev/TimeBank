@@ -133,3 +133,37 @@ export async function getVideos(category?: string): Promise<VideoWithOwner[]> {
     };
   });
 }
+export async function getVideoById(id: string): Promise<VideoWithOwner | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('videos')
+    .select(
+      'id, owner_id, title, description, category, video_url, thumbnail_url, duration_seconds, status, created_at, profiles(username, full_name, avatar_url)',
+    )
+    .eq('id', id)
+    .eq('status', 'active')
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const owner = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
+
+  return {
+    id: data.id,
+    ownerId: data.owner_id,
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    videoUrl: data.video_url,
+    thumbnailUrl: data.thumbnail_url,
+    durationSeconds: data.duration_seconds,
+    status: data.status,
+    createdAt: data.created_at,
+    ownerUsername: owner?.username ?? null,
+    ownerFullName: owner?.full_name ?? null,
+    ownerAvatarUrl: owner?.avatar_url ?? null,
+  };
+}

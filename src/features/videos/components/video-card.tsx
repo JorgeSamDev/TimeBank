@@ -24,12 +24,13 @@ function formatDuration(seconds: number) {
 
   return `${minutes} min`;
 }
+
 export function VideoCard({ video }: { video: VideoWithOwner }) {
   const ownerName = video.ownerFullName || video.ownerUsername || 'Usuario';
 
   return (
     <div className="flex flex-col gap-2 overflow-hidden rounded-lg border border-border">
-      <div className="aspect-video w-full bg-muted">
+      <Link href={`/video/${video.id}`} className="aspect-video w-full bg-muted">
         {video.thumbnailUrl && (
           <Image
             src={video.thumbnailUrl}
@@ -39,10 +40,12 @@ export function VideoCard({ video }: { video: VideoWithOwner }) {
             className="h-full w-full object-cover"
           />
         )}
-      </div>
+      </Link>
 
       <div className="flex flex-col gap-2 p-3">
-        <p className="line-clamp-2 font-medium">{video.title}</p>
+        <Link href={`/video/${video.id}`}>
+          <p className="line-clamp-2 font-medium hover:underline">{video.title}</p>
+        </Link>
 
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{CATEGORY_LABELS[video.category] ?? video.category}</span>
