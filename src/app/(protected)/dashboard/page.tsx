@@ -1,15 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { getMyBalance } from '@/features/credits/actions/credit.actions';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { getMyVideos } from '@/features/videos/actions/video.actions';
 import { signOut } from '@/features/auth/actions/auth.actions';
 import { Button } from '@/components/ui/button';
-import { ComingSoonCard } from '@/components/shared/coming-soon-card';
 import { MyVideosList } from '@/features/videos/components/my-videos-list';
 
 export default async function DashboardPage() {
   const profile = await getMyProfile();
   const videos = await getMyVideos();
+  const balance = await getMyBalance();
 
   const displayName = profile?.fullName || profile?.username || 'Usuario';
 
@@ -70,10 +71,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <ComingSoonCard
-          title="Tus créditos"
-          description="Aquí verás tus horas disponibles para ver videos de otros usuarios."
-        />
+        <div className="flex flex-col gap-1 rounded-lg border border-border p-4">
+        <p className="text-sm text-muted-foreground">Tus créditos</p>
+         <p className="text-2xl font-semibold">{balance.toFixed(2)} horas</p>
+        </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm font-medium">Tus videos</p>
           <MyVideosList videos={videos} />

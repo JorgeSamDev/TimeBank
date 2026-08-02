@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import type { Video } from '../types';
+import { grantUploadCredit } from '@/features/credits/actions/credit.actions';
 import { createClient } from '@/lib/supabase/server';
 import { createVideoSchema, type CreateVideoInput } from '../schemas/video.schema';
 
@@ -20,6 +21,7 @@ export async function createVideo(input: CreateVideoInput): Promise<ActionResult
   if (!parsed.success) {
     return { success: false, error: 'Datos inválidos' };
   }
+  
 
   const supabase = await createClient();
   const {
@@ -49,7 +51,7 @@ export async function createVideo(input: CreateVideoInput): Promise<ActionResult
   if (error) {
     return { success: false, error: error.message };
   }
-
+   await grantUploadCredit(user.id, data.id, durationSeconds);
   revalidatePath('/dashboard');
   return { success: true, videoId: data.id };
 }

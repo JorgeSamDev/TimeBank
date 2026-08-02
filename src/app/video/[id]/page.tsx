@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getVideoById } from '@/features/videos/actions/video.actions';
+import { chargeForView } from '@/features/credits/actions/credit.actions';
+import { getCurrentUser } from '@/lib/supabase/auth';
 
 const CATEGORY_LABELS: Record<string, string> = {
   musica: 'Música',
@@ -25,6 +27,37 @@ export default async function VideoPage({ params }: PageProps) {
 
   if (!video) {
     notFound();
+  }
+
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return (
+      <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-10 text-center">
+        <p>Inicia sesión para ver este video.</p>
+        <Link href="/login" className="underline">
+          Iniciar sesión
+        </Link>
+      </div>
+    );
+  }
+
+  // El dueño del video siempre puede verlo sin gastar crédito.
+  const isOwner = user.id === video.ownerId;
+  const chargeResult = isOwner
+    ? { success: true }
+    : await chargeForView(video.id, video.durationSeconds);
+
+  if (!chargeResult.success) {
+    return (
+      <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-10 text-center">
+        <p className="font-medium">No tienes créditos suficientes</p>
+        <p className="text-sm text-muted-foreground">{chargeResult.error}</p>
+        <Link href="/dashboard/videos/nuevo" className="text-sm underline">
+          Sube un video para ganar créditos
+        </Link>
+      </div>
+    );
   }
 
   const ownerName = video.ownerFullName || video.ownerUsername || 'Usuario';
@@ -69,18 +102,4 @@ export default async function VideoPage({ params }: PageProps) {
       </div>
     </div>
   );
-}
-
-export async function generateMetadata({ params }: PageProps) {
-  const { id } = await params;
-  const video = await getVideoById(id);
-
-  if (!video) {
-    return { title: 'Video no encontrado — TimeBank' };
-  }
-
-  return {
-    title: `${video.title} — TimeBank`,
-    description: video.description ?? undefined,
-  };
 }
