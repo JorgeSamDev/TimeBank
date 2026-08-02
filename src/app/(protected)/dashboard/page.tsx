@@ -1,12 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
+import { getMyVideos } from '@/features/videos/actions/video.actions';
 import { signOut } from '@/features/auth/actions/auth.actions';
 import { Button } from '@/components/ui/button';
 import { ComingSoonCard } from '@/components/shared/coming-soon-card';
+import { MyVideosList } from '@/features/videos/components/my-videos-list';
 
 export default async function DashboardPage() {
   const profile = await getMyProfile();
+  const videos = await getMyVideos();
 
   const displayName = profile?.fullName || profile?.username || 'Usuario';
 
@@ -59,6 +62,11 @@ export default async function DashboardPage() {
             nativeButton={false}
           />
         )}
+        <Button
+          size="sm"
+          render={<Link href="/dashboard/videos/nuevo">Subir video</Link>}
+          nativeButton={false}
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -66,10 +74,10 @@ export default async function DashboardPage() {
           title="Tus créditos"
           description="Aquí verás tus horas disponibles para ver videos de otros usuarios."
         />
-        <ComingSoonCard
-          title="Tus videos"
-          description="Aquí verás los videos que has publicado y las horas que has ganado."
-        />
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-medium">Tus videos</p>
+          <MyVideosList videos={videos} />
+        </div>
       </div>
     </div>
   );

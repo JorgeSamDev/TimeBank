@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import type { Video } from '../types';
 import { createClient } from '@/lib/supabase/server';
 import { createVideoSchema, type CreateVideoInput } from '../schemas/video.schema';
 
@@ -51,4 +52,37 @@ export async function createVideo(input: CreateVideoInput): Promise<ActionResult
 
   revalidatePath('/dashboard');
   return { success: true, videoId: data.id };
+}
+export async function getMyVideos(): Promise<Video[]> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('videos')
+    .select('id, owner_id, title, description, category, video_url, thumbnail_url, duration_seconds, status, created_at')
+    .eq('owner_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((v) => ({
+    id: v.id,
+    ownerId: v.owner_id,
+    title: v.title,
+    description: v.description,
+    category: v.category,
+    videoUrl: v.video_url,
+    thumbnailUrl: v.thumbnail_url,
+    durationSeconds: v.duration_seconds,
+    status: v.status,
+    createdAt: v.created_at,
+  }));
 }
