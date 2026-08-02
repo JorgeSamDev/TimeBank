@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { signOut } from '@/features/auth/actions/auth.actions';
 import { Button } from '@/components/ui/button';
+import { ComingSoonCard } from '@/components/shared/coming-soon-card';
 
 export default async function DashboardPage() {
   const profile = await getMyProfile();
@@ -44,7 +45,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="flex gap-3">
-        <Button variant="outline" size="sm" render={<Link href="/dashboard/perfil">Editar perfil</Link>} nativeButton={false} />
+        <Button
+          variant="outline"
+          size="sm"
+          render={<Link href="/dashboard/perfil">Editar perfil</Link>}
+          nativeButton={false}
+        />
         {profile?.username && (
           <Button
             variant="outline"
@@ -53,6 +59,17 @@ export default async function DashboardPage() {
             nativeButton={false}
           />
         )}
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <ComingSoonCard
+          title="Tus créditos"
+          description="Aquí verás tus horas disponibles para ver videos de otros usuarios."
+        />
+        <ComingSoonCard
+          title="Tus videos"
+          description="Aquí verás los videos que has publicado y las horas que has ganado."
+        />
       </div>
     </div>
   );
