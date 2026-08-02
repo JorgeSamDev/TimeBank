@@ -41,9 +41,9 @@ export function EditProfileForm({ initialProfile }: { initialProfile: PublicProf
     const parsed = editProfileSchema.safeParse({ ...data, skills: skillsArray });
 
     if (!parsed.success) {
-      setServerError('Revisa los datos ingresados.');
-      return;
-    }
+      setServerError(parsed.error.issues[0]?.message ?? 'Revisa los datos ingresados.');
+  return;
+      }
 
     const result = await updateProfile(parsed.data);
 

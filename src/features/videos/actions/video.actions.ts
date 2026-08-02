@@ -86,3 +86,50 @@ export async function getMyVideos(): Promise<Video[]> {
     createdAt: v.created_at,
   }));
 }
+export type VideoWithOwner = Video & {
+  ownerUsername: string | null;
+  ownerFullName: string | null;
+  ownerAvatarUrl: string | null;
+};
+
+export async function getVideos(category?: string): Promise<VideoWithOwner[]> {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from('videos')
+    .select(
+      'id, owner_id, title, description, category, video_url, thumbnail_url, duration_seconds, status, created_at, profiles(username, full_name, avatar_url)',
+    )
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
+
+  if (category) {
+    query = query.eq('category', category);
+  }
+
+  const { data, error } = await query;
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((v) => {
+    const owner = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles;
+
+    return {
+      id: v.id,
+      ownerId: v.owner_id,
+      title: v.title,
+      description: v.description,
+      category: v.category,
+      videoUrl: v.video_url,
+      thumbnailUrl: v.thumbnail_url,
+      durationSeconds: v.duration_seconds,
+      status: v.status,
+      createdAt: v.created_at,
+      ownerUsername: owner?.username ?? null,
+      ownerFullName: owner?.full_name ?? null,
+      ownerAvatarUrl: owner?.avatar_url ?? null,
+    };
+  });
+}
