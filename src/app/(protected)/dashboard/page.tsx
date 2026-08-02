@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { getMyVideos } from '@/features/videos/actions/video.actions';
 import { Button } from '@/components/ui/button';
+import { PageBackground } from '@/components/shared/page-background';
 import { MyVideosList } from '@/features/videos/components/my-videos-list';
 
 export default async function DashboardPage() {
@@ -12,6 +13,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-10">
+      <PageBackground src="/images/dashboard.jpg" />
       <div className="glass flex items-center justify-between rounded-2xl p-4">
         <div>
           <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-medium">

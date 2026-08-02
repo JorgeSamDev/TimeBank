@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import type { PublicProfile } from '../types';
 import type { Video } from '@/features/videos/types';
+import { PageBackground } from '@/components/shared/page-background';
 import { VideoCard } from '@/features/videos/components/video-card';
 
 type PublicProfileViewProps = {
@@ -14,6 +15,7 @@ export function PublicProfileView({ profile, videos }: PublicProfileViewProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
+      <PageBackground src="/images/perfil.jpg" />
       <div className="glass flex items-center gap-4 rounded-2xl p-6">
         <div className="h-16 w-16 overflow-hidden rounded-full bg-muted text-xl font-semibold">
           {profile.avatarUrl ? (

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getVideos } from '@/features/videos/actions/video.actions';
+import { PageBackground } from '@/components/shared/page-background';
 import { VideoCard } from '@/features/videos/components/video-card';
 import { VIDEO_CATEGORIES } from '@/features/videos/schemas/video.schema';
 
@@ -25,6 +26,7 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
+      <PageBackground src="/images/landing.jpg" />
       <div>
         <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-[var(--tb-paper)]">
   Explora TimeBank

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
+import { PageBackground } from '@/components/shared/page-background';
 import { ResetPasswordForm } from '@/features/auth/components/reset-password-form';
 
 export default async function EditProfilePage() {
@@ -8,6 +9,7 @@ export default async function EditProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10">
+      <PageBackground src="/images/perfil.jpg" />
       <div className="glass flex flex-col gap-1 rounded-2xl p-4">
         <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
           Tu perfil público

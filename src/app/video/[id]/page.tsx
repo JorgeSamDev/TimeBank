@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { ReportVideoButton } from '@/features/videos/components/report-video-button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { PageBackground } from '@/components/shared/page-background';
 import { getVideoById } from '@/features/videos/actions/video.actions';
 import { chargeForView } from '@/features/credits/actions/credit.actions';
 import { getCurrentUser } from '@/lib/supabase/auth';
@@ -35,6 +36,7 @@ export default async function VideoPage({ params }: PageProps) {
   if (!user) {
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-10 text-center">
+        <PageBackground src="/images/video.jpg" />
         <p>Inicia sesión para ver este video.</p>
         <Link href="/login" className="underline">
           Iniciar sesión
