@@ -10,7 +10,7 @@ export async function SiteHeader() {
 
   if (!user) {
     return (
-      <header className="flex items-center justify-between border-b border-border px-4 py-3">
+      <header className="glass sticky top-0 z-10 flex items-center justify-between px-4 py-3">
         <Link href="/" className="font-semibold">
           TimeBank
         </Link>
@@ -29,7 +29,7 @@ export async function SiteHeader() {
   const displayName = profile?.fullName || profile?.username || 'Usuario';
 
   return (
-    <header className="flex items-center justify-between border-b border-border px-4 py-3">
+    <header className="glass sticky top-0 z-10 flex items-center justify-between px-4 py-3">
       <Link href="/" className="font-semibold">
         TimeBank
       </Link>
