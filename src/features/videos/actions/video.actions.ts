@@ -169,3 +169,28 @@ export async function getVideoById(id: string): Promise<VideoWithOwner | null> {
     ownerAvatarUrl: owner?.avatar_url ?? null,
   };
 }
+export async function reportVideo(videoId: string, reason: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'Debes iniciar sesión' };
+  }
+
+  const { error } = await supabase.from('video_reports').insert({
+    video_id: videoId,
+    reporter_id: user.id,
+    reason,
+  });
+
+  if (error) {
+    if (error.code === '23505') {
+      return { success: false, error: 'Ya reportaste este video' };
+    }
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}

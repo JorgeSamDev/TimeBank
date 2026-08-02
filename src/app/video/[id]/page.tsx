@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { ReportVideoButton } from '@/features/videos/components/report-video-button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getVideoById } from '@/features/videos/actions/video.actions';
@@ -99,6 +100,8 @@ export default async function VideoPage({ params }: PageProps) {
         )}
 
         {video.description && <p className="text-sm">{video.description}</p>}
+
+        {!isOwner && <ReportVideoButton videoId={video.id} />}
       </div>
     </div>
   );
