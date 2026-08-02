@@ -1,4 +1,4 @@
-import { VideoUploadForm } from '@/features/videos/components/video-upload-form';
+import { VideoUploadFormLoader } from '@/features/videos/components/video-upload-form-loader';
 
 export default function NewVideoPage() {
   return (
@@ -9,7 +9,7 @@ export default function NewVideoPage() {
           Comparte lo que sabes y gana tiempo para aprender de otros.
         </p>
       </div>
-      <VideoUploadForm />
+      <VideoUploadFormLoader />
     </div>
   );
 }

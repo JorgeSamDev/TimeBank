@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -14,17 +14,39 @@ import { createVideoSchema, VIDEO_CATEGORIES, type CreateVideoInput } from '../s
 
 const MAX_FILE_SIZE_MB = 500;
 
-type FormMetadata = Omit<CreateVideoInput, 'videoUrl' | 'durationSeconds'>;
+type FormMetadata = Omit<CreateVideoInput, 'videoUrl' | 'durationSeconds' | 'thumbnailUrl'>;
+
+// Captura un frame del video en el segundo indicado y lo devuelve como Blob (JPEG).
+function captureVideoFrame(videoEl: HTMLVideoElement): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = videoEl.videoWidth;
+    canvas.height = videoEl.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      resolve(null);
+      return;
+    }
+
+    ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
+  });
+}
 
 export function VideoUploadForm() {
   const router = useRouter();
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+
   const [file, setFile] = useState<File | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [thumbnailBlob, setThumbnailBlob] = useState<Blob | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<'idle' | 'reading' | 'uploading' | 'saving'>('idle');
   const [error, setError] = useState<string | null>(null);
 
   const { control, handleSubmit, formState } = useForm<FormMetadata>({
-    resolver: zodResolver(createVideoSchema.omit({ videoUrl: true, durationSeconds: true })),
+    resolver: zodResolver(createVideoSchema.omit({ videoUrl: true, durationSeconds: true, thumbnailUrl: true })),
     defaultValues: { title: '', description: '', category: undefined },
   });
 
@@ -32,6 +54,8 @@ export function VideoUploadForm() {
     const selected = event.target.files?.[0];
     setError(null);
     setDuration(null);
+    setThumbnailBlob(null);
+    setThumbnailPreview(null);
 
     if (!selected) return;
 
@@ -47,21 +71,48 @@ export function VideoUploadForm() {
 
     setUploadProgress('reading');
 
-    // Truco para medir la duración real: cargamos el archivo en un <video>
-    // oculto en memoria y leemos su propiedad .duration cuando esté listo.
     const videoEl = document.createElement('video');
     videoEl.preload = 'metadata';
+    videoEl.muted = true;
+
     videoEl.onloadedmetadata = () => {
-      URL.revokeObjectURL(videoEl.src);
       setDuration(Math.round(videoEl.duration));
+      // Saltamos al segundo 1 (o al inicio si el video es más corto) para capturar el frame.
+      videoEl.currentTime = Math.min(1, videoEl.duration / 2);
+    };
+
+    videoEl.onseeked = async () => {
+      const blob = await captureVideoFrame(videoEl);
+      URL.revokeObjectURL(videoEl.src);
+
+      if (blob) {
+        setThumbnailBlob(blob);
+        setThumbnailPreview(URL.createObjectURL(blob));
+      }
+
       setFile(selected);
       setUploadProgress('idle');
     };
+
     videoEl.onerror = () => {
       setError('No se pudo leer el archivo de video');
       setUploadProgress('idle');
     };
+
     videoEl.src = URL.createObjectURL(selected);
+  }
+
+  function handleCustomThumbnail(event: React.ChangeEvent<HTMLInputElement>) {
+    const selected = event.target.files?.[0];
+    if (!selected) return;
+
+    if (!selected.type.startsWith('image/')) {
+      setError('Selecciona una imagen válida para la miniatura');
+      return;
+    }
+
+    setThumbnailBlob(selected);
+    setThumbnailPreview(URL.createObjectURL(selected));
   }
 
   async function onSubmit(metadata: FormMetadata) {
@@ -84,10 +135,11 @@ export function VideoUploadForm() {
 
     setUploadProgress('uploading');
 
-    const extension = file.name.split('.').pop();
-    const path = `${user.id}/${crypto.randomUUID()}.${extension}`;
+    const videoExtension = file.name.split('.').pop();
+    const videoId = crypto.randomUUID();
+    const videoPath = `${user.id}/${videoId}.${videoExtension}`;
 
-    const { error: uploadError } = await supabase.storage.from('videos').upload(path, file);
+    const { error: uploadError } = await supabase.storage.from('videos').upload(videoPath, file);
 
     if (uploadError) {
       setError(uploadError.message);
@@ -96,14 +148,31 @@ export function VideoUploadForm() {
     }
 
     const {
-      data: { publicUrl },
-    } = supabase.storage.from('videos').getPublicUrl(path);
+      data: { publicUrl: videoUrl },
+    } = supabase.storage.from('videos').getPublicUrl(videoPath);
+
+    let thumbnailUrl: string | undefined;
+
+    if (thumbnailBlob) {
+      const thumbnailPath = `${user.id}/${videoId}-thumb.jpg`;
+      const { error: thumbError } = await supabase.storage
+        .from('videos')
+        .upload(thumbnailPath, thumbnailBlob, { contentType: 'image/jpeg' });
+
+      if (!thumbError) {
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from('videos').getPublicUrl(thumbnailPath);
+        thumbnailUrl = publicUrl;
+      }
+    }
 
     setUploadProgress('saving');
 
     const result = await createVideo({
       ...metadata,
-      videoUrl: publicUrl,
+      videoUrl,
+      thumbnailUrl,
       durationSeconds: duration,
     });
 
@@ -124,19 +193,40 @@ export function VideoUploadForm() {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="file">Archivo de video</FieldLabel>
-          <input
-            id="file"
-            type="file"
-            accept="video/*"
-            onChange={handleFileChange}
-            disabled={isBusy}
-          />
+          <input id="file" type="file" accept="video/*" onChange={handleFileChange} disabled={isBusy} />
           {duration !== null && (
             <p className="text-sm text-muted-foreground">
               Duración detectada: {Math.floor(duration / 60)} min {duration % 60} seg
             </p>
           )}
         </Field>
+
+        {thumbnailPreview && (
+          <Field>
+            <FieldLabel>Miniatura</FieldLabel>
+            <div className="flex items-center gap-3">
+              <img src={thumbnailPreview} alt="Miniatura del video" className="h-20 w-32 rounded-md object-cover" />
+              <div className="flex flex-col gap-1">
+                <input
+                  ref={thumbnailInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleCustomThumbnail}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isBusy}
+                  onClick={() => thumbnailInputRef.current?.click()}
+                >
+                  Cambiar miniatura
+                </Button>
+              </div>
+            </div>
+          </Field>
+        )}
 
         <Controller
           name="title"
@@ -189,8 +279,8 @@ export function VideoUploadForm() {
         {error && <p className="text-sm text-destructive">{error}</p>}
 
         <Button type="submit" disabled={isBusy || !file}>
-          {uploadProgress === 'reading' && 'Leyendo video...'}
-          {uploadProgress === 'uploading' && 'Subiendo video...'}
+          {uploadProgress === 'reading' && 'Procesando video...'}
+          {uploadProgress === 'uploading' && 'Subiendo...'}
           {uploadProgress === 'saving' && 'Guardando...'}
           {uploadProgress === 'idle' && 'Publicar video'}
         </Button>
