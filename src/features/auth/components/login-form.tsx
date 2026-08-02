@@ -69,6 +69,8 @@ export function LoginForm() {
             </Field>
           )}
         />
+        <Link href="/forgot-password" className="text-sm text-muted-foreground underline">
+            ¿Olvidaste tu contraseña? </Link>
 
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 

@@ -61,3 +61,41 @@ export async function signOut(): Promise<void> {
   revalidatePath('/', 'layout');
   redirect('/login');
 }
+import { forgotPasswordSchema, resetPasswordSchema, type ForgotPasswordInput, type ResetPasswordInput } from '../schemas/auth.schema';
+
+export async function requestPasswordReset(input: ForgotPasswordInput): Promise<ActionResult> {
+  const parsed = forgotPasswordSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return { success: false, error: 'Correo inválido' };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+export async function updatePassword(input: ResetPasswordInput): Promise<ActionResult> {
+  const parsed = resetPasswordSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return { success: false, error: 'Datos inválidos' };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}

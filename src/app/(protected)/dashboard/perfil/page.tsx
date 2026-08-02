@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
+import { ResetPasswordForm } from '@/features/auth/components/reset-password-form';
 
 export default async function EditProfilePage() {
   const profile = await getMyProfile();
@@ -19,6 +20,12 @@ export default async function EditProfilePage() {
         )}
       </div>
       <EditProfileForm initialProfile={profile} />
+
+      <div className="flex flex-col gap-2 border-t border-border pt-6">
+        <h2 className="text-lg font-semibold">Cambiar contraseña</h2>
+        <ResetPasswordForm />
+      </div>
     </div>
+    
   );
 }
