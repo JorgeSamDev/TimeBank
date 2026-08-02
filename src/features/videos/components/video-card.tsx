@@ -29,7 +29,7 @@ export function VideoCard({ video }: { video: VideoWithOwner }) {
   const ownerName = video.ownerFullName || video.ownerUsername || 'Usuario';
 
   return (
-    <div className="flex flex-col gap-2 overflow-hidden rounded-lg border border-border">
+    <div className="glass flex flex-col gap-2 overflow-hidden rounded-2xl transition-transform hover:scale-[1.02]">
       <Link href={`/video/${video.id}`} className="aspect-video w-full bg-muted">
         {video.thumbnailUrl && (
           <Image
@@ -49,7 +49,7 @@ export function VideoCard({ video }: { video: VideoWithOwner }) {
 
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{CATEGORY_LABELS[video.category] ?? video.category}</span>
-          <span>{formatDuration(video.durationSeconds)}</span>
+          <span className="font-mono text-[var(--tb-ember)]">{formatDuration(video.durationSeconds)}</span>
         </div>
 
         {video.ownerUsername && (

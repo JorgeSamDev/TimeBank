@@ -11,9 +11,9 @@ export async function SiteHeader() {
   if (!user) {
     return (
       <header className="glass sticky top-0 z-10 flex items-center justify-between px-4 py-3">
-        <Link href="/" className="font-semibold">
-          TimeBank
-        </Link>
+        <Link href="/" className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--tb-paper)]">
+  TimeBank
+</Link>
         <div className="flex items-center gap-4">
           <Link href="/catalogo" className="text-sm text-muted-foreground hover:underline">
             Catálogo
@@ -30,14 +30,14 @@ export async function SiteHeader() {
 
   return (
     <header className="glass sticky top-0 z-10 flex items-center justify-between px-4 py-3">
-      <Link href="/" className="font-semibold">
-        TimeBank
-      </Link>
+      <Link href="/" className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--tb-paper)]">
+  TimeBank
+</Link>
       <div className="flex items-center gap-4">
         <Link href="/catalogo" className="text-sm text-muted-foreground hover:underline">
           Catálogo
         </Link>
-        <span className="text-sm text-muted-foreground">{balance.toFixed(2)} hrs</span>
+        <span className="font-mono text-sm text-[var(--tb-ember)]">{balance.toFixed(2)} hrs</span>
         <UserMenu displayName={displayName} avatarUrl={profile?.avatarUrl ?? null} />
       </div>
     </header>

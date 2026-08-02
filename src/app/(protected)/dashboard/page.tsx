@@ -12,10 +12,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-10">
-      <div className="flex items-center justify-between">
+      <div className="glass flex items-center justify-between rounded-2xl p-4">
         <div>
-          <p className="text-lg font-medium">Hola, {displayName}</p>
-          {profile?.bio && <p className="text-sm text-muted-foreground">{profile.bio}</p>}
+          <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-medium">
+            Hola, {displayName}
+          </p>
+          {profile?.bio && <p className="text-sm text-[var(--tb-mist)]">{profile.bio}</p>}
         </div>
         <Button size="sm" render={<Link href="/dashboard/videos/nuevo">Subir video</Link>} nativeButton={false} />
       </div>

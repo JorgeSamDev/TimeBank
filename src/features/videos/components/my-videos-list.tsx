@@ -41,7 +41,7 @@ export function MyVideosList({ videos }: { videos: Video[] }) {
   return (
     <div className="flex flex-col gap-3">
       {videos.map((video) => (
-        <div key={video.id} className="flex gap-3 rounded-lg border border-border p-3">
+        <div key={video.id} className="glass flex gap-3 rounded-2xl p-3">
           <div className="h-16 w-24 shrink-0 overflow-hidden rounded-md bg-muted">
             {video.thumbnailUrl && (
               <Image
