@@ -6,8 +6,10 @@ export default async function AdminReportsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold">Videos reportados</h1>
+      <div className="glass rounded-2xl p-4">
+        <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
+          Videos reportados
+        </h1>
         <p className="text-sm text-muted-foreground">
           Revisa y modera el contenido reportado por la comunidad.
         </p>

@@ -4,12 +4,14 @@ import type { PublicProfile } from '../types';
 export function PublicProfileView({ profile }: { profile: PublicProfile }) {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
-      <div className="flex items-center gap-4">
+      <div className="glass flex items-center gap-4 rounded-2xl p-6">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-xl font-semibold">
           {(profile.fullName ?? profile.username ?? '?').charAt(0).toUpperCase()}
         </div>
         <div>
-          <h1 className="text-xl font-semibold">{profile.fullName ?? profile.username}</h1>
+          <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
+  {profile.fullName ?? profile.username}
+</h1>
           {profile.city && <p className="text-sm text-muted-foreground">{profile.city}</p>}
         </div>
       </div>

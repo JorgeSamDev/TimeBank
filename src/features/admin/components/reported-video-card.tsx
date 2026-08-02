@@ -26,7 +26,7 @@ export function ReportedVideoCard({ video }: { video: ReportedVideo }) {
   if (resolved) return null;
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border p-4">
+    <div className="glass flex flex-col gap-2 rounded-2xl p-4">
       <div className="flex items-center justify-between">
         <Link href={`/video/${video.videoId}`} className="font-medium hover:underline">
           {video.title}

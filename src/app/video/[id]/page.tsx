@@ -72,8 +72,10 @@ export default async function VideoPage({ params }: PageProps) {
         className="w-full rounded-lg bg-black"
       />
 
-      <div className="flex flex-col gap-2">
-        <h1 className="text-xl font-semibold">{video.title}</h1>
+      <div className="glass flex flex-col gap-2 rounded-2xl p-4">
+        <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
+          {video.title}
+        </h1>
 
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{CATEGORY_LABELS[video.category] ?? video.category}</span>

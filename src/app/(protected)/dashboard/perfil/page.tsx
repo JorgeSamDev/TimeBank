@@ -8,8 +8,10 @@ export default async function EditProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">Tu perfil público</h1>
+      <div className="glass flex flex-col gap-1 rounded-2xl p-4">
+        <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
+          Tu perfil público
+        </h1>
         <p className="text-sm text-muted-foreground">
           Así te verán los demás usuarios de TimeBank.
         </p>

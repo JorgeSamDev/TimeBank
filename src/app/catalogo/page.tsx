@@ -26,7 +26,9 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <div>
-        <h1 className="text-2xl font-semibold">Explora TimeBank</h1>
+        <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-[var(--tb-paper)]">
+  Explora TimeBank
+</h1>
         <p className="text-sm text-muted-foreground">
           Aprende de lo que otros usuarios han compartido.
         </p>
@@ -35,7 +37,7 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
       <div className="flex flex-wrap gap-2">
         <Link
           href="/catalogo"
-          className={`rounded-full border px-3 py-1 text-sm ${!categoria ? 'border-foreground bg-foreground text-background' : 'border-border text-muted-foreground'}`}
+          className={`rounded-full px-3 py-1 text-sm transition-colors ${!categoria ? 'bg-[var(--tb-glow)] text-white' : 'glass text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
         >
           Todas
         </Link>
@@ -43,7 +45,7 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
           <Link
             key={cat}
             href={`/catalogo?categoria=${cat}`}
-            className={`rounded-full border px-3 py-1 text-sm ${categoria === cat ? 'border-foreground bg-foreground text-background' : 'border-border text-muted-foreground'}`}
+            className={`rounded-full px-3 py-1 text-sm transition-colors ${categoria === cat ? 'bg-[var(--tb-glow)] text-white' : 'glass text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
           >
             {CATEGORY_LABELS[cat]}
           </Link>
