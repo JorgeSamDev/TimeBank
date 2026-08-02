@@ -1,16 +1,8 @@
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getCurrentUser } from '@/lib/supabase/auth';
 import { getMyProfile } from '@/features/profile/actions/profile.actions';
 import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
 
 export default async function EditProfilePage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect('/login');
-  }
-
   const profile = await getMyProfile();
 
   return (
