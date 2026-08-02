@@ -15,9 +15,10 @@ import { createClient } from '@/lib/supabase/client';
 type UserMenuProps = {
   displayName: string;
   avatarUrl: string | null;
+  isAdmin: boolean;
 };
 
-export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
+export function UserMenu({ displayName, avatarUrl, isAdmin }: UserMenuProps) {
   const router = useRouter();
 
   async function handleSignOut() {
@@ -32,7 +33,13 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
       <DropdownMenuTrigger className="flex items-center gap-2 rounded-full">
         <div className="h-8 w-8 overflow-hidden rounded-full bg-muted">
           {avatarUrl ? (
-            <Image src={avatarUrl} alt={displayName} width={32} height={32} className="h-full w-full object-cover" />
+            <Image
+              src={avatarUrl}
+              alt={displayName}
+              width={32}
+              height={32}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
               {displayName.charAt(0).toUpperCase()}
@@ -43,6 +50,7 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem render={<Link href="/dashboard">Dashboard</Link>} />
         <DropdownMenuItem render={<Link href="/dashboard/perfil">Mi perfil</Link>} />
+        {isAdmin && <DropdownMenuItem render={<Link href="/admin/reportes">Panel de admin</Link>} />}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>Cerrar sesión</DropdownMenuItem>
       </DropdownMenuContent>

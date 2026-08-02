@@ -38,7 +38,7 @@ export async function SiteHeader() {
           Catálogo
         </Link>
         <span className="font-mono text-sm text-[var(--tb-ember)]">{balance.toFixed(2)} hrs</span>
-        <UserMenu displayName={displayName} avatarUrl={profile?.avatarUrl ?? null} />
+        <UserMenu displayName={displayName} avatarUrl={profile?.avatarUrl ?? null} isAdmin={profile?.role === 'admin'} />
       </div>
     </header>
   );

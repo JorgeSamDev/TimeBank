@@ -263,7 +263,7 @@ export function VideoUploadForm() {
                 {...field}
                 id="category"
                 disabled={isBusy}
-                className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+               className="h-9 rounded-md border border-white/20 bg-white/5 px-3 text-sm text-[var(--tb-paper)]"
               >
                 <option value="">Selecciona una categoría</option>
                 {VIDEO_CATEGORIES.map((cat) => (

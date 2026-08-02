@@ -51,7 +51,7 @@ export async function getMyProfile(): Promise<PublicProfile | null> {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, username, full_name, avatar_url, bio, city, skills')
+    .select('id, username, full_name, avatar_url, bio, city, skills, role')
     .eq('id', user.id)
     .maybeSingle();
 
@@ -67,6 +67,7 @@ export async function getMyProfile(): Promise<PublicProfile | null> {
     bio: profile.bio,
     city: profile.city,
     skills: profile.skills ?? [],
+    role: profile.role,
   };
 }
 

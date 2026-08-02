@@ -6,4 +6,5 @@ export type PublicProfile = {
   bio: string | null;
   city: string | null;
   skills: string[];
+  role?: 'user' | 'admin';
 };

@@ -766,6 +766,10 @@
   --tb-ember: #ff9d6c;
   --tb-paper: #f6f5f6;
   --tb-mist: #c9c3d9;
+
+  --muted-foreground: #e4e0ef;
+  --border: rgb(255 255 255 / 0.25);
+  --foreground: #f6f5f6;
 }
 
 .bg-mesh {
