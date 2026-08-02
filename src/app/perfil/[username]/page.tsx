@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getPublicProfileByUsername } from '@/features/profile/actions/profile.actions';
 import { PublicProfileView } from '@/features/profile/components/public-profile-view';
+import { getVideosByOwner } from '@/features/videos/actions/video.actions';
 
 type PageProps = {
   params: Promise<{ username: string }>;
@@ -14,7 +15,9 @@ export default async function PublicProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  return <PublicProfileView profile={profile} />;
+  const videos = await getVideosByOwner(profile.id);
+
+  return <PublicProfileView profile={profile} videos={videos} />;
 }
 
 export async function generateMetadata({ params }: PageProps) {

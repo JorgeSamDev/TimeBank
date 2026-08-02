@@ -194,3 +194,30 @@ export async function reportVideo(videoId: string, reason: string): Promise<Acti
 
   return { success: true };
 }
+export async function getVideosByOwner(ownerId: string): Promise<Video[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('videos')
+    .select('id, owner_id, title, description, category, video_url, thumbnail_url, duration_seconds, status, created_at')
+    .eq('owner_id', ownerId)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((v) => ({
+    id: v.id,
+    ownerId: v.owner_id,
+    title: v.title,
+    description: v.description,
+    category: v.category,
+    videoUrl: v.video_url,
+    thumbnailUrl: v.thumbnail_url,
+    durationSeconds: v.duration_seconds,
+    status: v.status,
+    createdAt: v.created_at,
+  }));
+}
