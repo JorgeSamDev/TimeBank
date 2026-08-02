@@ -111,3 +111,58 @@ export async function updateProfile(input: EditProfileInput): Promise<ActionResu
   revalidatePath('/dashboard/perfil');
   return { success: true };
 }
+// Sube el avatar del usuario logueado a Supabase Storage y actualiza avatar_url
+export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  const file = formData.get('avatar');
+
+  if (!(file instanceof File) || file.size === 0) {
+    return { success: false, error: 'Selecciona una imagen válida' };
+  }
+
+  // Validaciones de seguridad: tipo y tamaño de archivo
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    return { success: false, error: 'Solo se permiten imágenes JPG, PNG o WebP' };
+  }
+
+  const maxSizeBytes = 2 * 1024 * 1024; // 2 MB
+  if (file.size > maxSizeBytes) {
+    return { success: false, error: 'La imagen no debe superar 2MB' };
+  }
+
+  const extension = file.name.split('.').pop();
+  const path = `${user.id}/avatar.${extension}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true });
+
+  if (uploadError) {
+    return { success: false, error: uploadError.message };
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('avatars').getPublicUrl(path);
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ avatar_url: publicUrl })
+    .eq('id', user.id);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  revalidatePath('/dashboard/perfil');
+  return { success: true };
+}

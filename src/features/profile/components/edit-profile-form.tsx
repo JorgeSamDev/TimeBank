@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AvatarUpload } from './avatar-upload';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { updateProfile } from '../actions/profile.actions';
@@ -57,6 +58,7 @@ export function EditProfileForm({ initialProfile }: { initialProfile: PublicProf
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <FieldGroup>
+        <AvatarUpload currentAvatarUrl={initialProfile?.avatarUrl ?? null} />
         <Controller
           name="username"
           control={control}
