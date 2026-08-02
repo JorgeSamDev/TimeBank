@@ -759,7 +759,7 @@
   }
 }
 :root {
-  --tb-void: #0b0b12;
+  --tb-void: #050508;
   --tb-glow: #a153ee;
   --tb-deep: #5a2498;
   --tb-bridge: #7c3fc4;
@@ -782,8 +782,8 @@
     radial-gradient(ellipse 70% 50% at 80% 15%, var(--tb-bridge) 0%, transparent 55%),
     radial-gradient(ellipse 60% 60% at 50% 90%, var(--tb-deep) 0%, transparent 60%);
   background-repeat: no-repeat;
-  opacity: 0.55;
-  filter: blur(80px);
+  opacity: 0.95;
+  filter: blur(20px);
   animation: mesh-drift 24s ease-in-out infinite alternate;
 }
 

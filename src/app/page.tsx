@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { PageBackground } from '@/components/shared/page-background';
 
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <PageBackground src="/images/landing.jpg" />
       {/* Hero */}
       <section className="container mx-auto flex min-h-screen flex-col items-center justify-center px-6 text-center">
         <span className="glass rounded-full px-4 py-1 text-sm text-[var(--tb-mist)]">

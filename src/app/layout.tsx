@@ -34,7 +34,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <div className="bg-mesh" aria-hidden="true" />
         <SiteHeader />
         <main className="relative flex-1">{children}</main>
       </body>
