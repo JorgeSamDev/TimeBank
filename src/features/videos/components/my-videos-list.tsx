@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Video } from '../types';
 
@@ -40,14 +41,27 @@ export function MyVideosList({ videos }: { videos: Video[] }) {
   return (
     <div className="flex flex-col gap-3">
       {videos.map((video) => (
-        <div key={video.id} className="flex flex-col gap-1 rounded-lg border border-border p-4">
-          <div className="flex items-center justify-between">
-            <p className="font-medium">{video.title}</p>
-            <span className="text-xs text-muted-foreground">{STATUS_LABELS[video.status]}</span>
+        <div key={video.id} className="flex gap-3 rounded-lg border border-border p-3">
+          <div className="h-16 w-24 shrink-0 overflow-hidden rounded-md bg-muted">
+            {video.thumbnailUrl && (
+              <Image
+                src={video.thumbnailUrl}
+                alt={video.title}
+                width={96}
+                height={64}
+                className="h-full w-full object-cover"
+              />
+            )}
           </div>
-          <p className="text-sm text-muted-foreground">
-            {CATEGORY_LABELS[video.category] ?? video.category} · {formatDuration(video.durationSeconds)}
-          </p>
+          <div className="flex flex-1 flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <p className="font-medium">{video.title}</p>
+              <span className="text-xs text-muted-foreground">{STATUS_LABELS[video.status]}</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {CATEGORY_LABELS[video.category] ?? video.category} · {formatDuration(video.durationSeconds)}
+            </p>
+          </div>
         </div>
       ))}
     </div>

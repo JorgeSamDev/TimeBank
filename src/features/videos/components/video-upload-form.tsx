@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { createClient } from '@/lib/supabase/client';
@@ -205,7 +206,7 @@ export function VideoUploadForm() {
           <Field>
             <FieldLabel>Miniatura</FieldLabel>
             <div className="flex items-center gap-3">
-              <img src={thumbnailPreview} alt="Miniatura del video" className="h-20 w-32 rounded-md object-cover" />
+              <Image src={thumbnailPreview}alt="Miniatura del video" width={128} height={80} unoptimized className="h-20 w-32 rounded-md object-cover" />
               <div className="flex flex-col gap-1">
                 <input
                   ref={thumbnailInputRef}
