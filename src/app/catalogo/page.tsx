@@ -25,39 +25,42 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
   const videos = await getVideos(categoria);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
-      <PageBackground src="/images/landing.jpg" />
-      <div>
-        <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-[var(--tb-paper)]">
-  Explora TimeBank
-</h1>
-        <p className="text-sm text-muted-foreground">
-          Aprende de lo que otros usuarios han compartido.
-        </p>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-10">
+      <PageBackground src="/images/catalogo.jpg" />
 
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href="/catalogo"
-          className={`rounded-full px-3 py-1 text-sm transition-colors ${!categoria ? 'bg-[var(--tb-glow)] text-white' : 'glass text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
-        >
-          Todas
-        </Link>
-        {VIDEO_CATEGORIES.map((cat) => (
+      <div className="glass flex flex-col gap-4 rounded-2xl p-6">
+        <div>
+          <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-[var(--tb-paper)]">
+            Explora TimeBank
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Aprende de lo que otros usuarios han compartido.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
           <Link
-            key={cat}
-            href={`/catalogo?categoria=${cat}`}
-            className={`rounded-full px-3 py-1 text-sm transition-colors ${categoria === cat ? 'bg-[var(--tb-glow)] text-white' : 'glass text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
+            href="/catalogo"
+            className={`rounded-full px-3 py-1 text-sm transition-colors ${!categoria ? 'bg-[var(--tb-glow)] text-white' : 'bg-white/5 text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
           >
-            {CATEGORY_LABELS[cat]}
+            Todas
           </Link>
-        ))}
+          {VIDEO_CATEGORIES.map((cat) => (
+            <Link
+              key={cat}
+              href={`/catalogo?categoria=${cat}`}
+              className={`rounded-full px-3 py-1 text-sm transition-colors ${categoria === cat ? 'bg-[var(--tb-glow)] text-white' : 'bg-white/5 text-[var(--tb-mist)] hover:text-[var(--tb-paper)]'}`}
+            >
+              {CATEGORY_LABELS[cat]}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {videos.length === 0 ? (
         <p className="text-sm text-muted-foreground">No hay videos en esta categoría todavía.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {videos.map((video) => (
             <VideoCard key={video.id} video={video} />
           ))}
