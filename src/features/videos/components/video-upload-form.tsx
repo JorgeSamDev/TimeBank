@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { UploadCloud } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { createClient } from '@/lib/supabase/client';
@@ -194,9 +195,41 @@ export function VideoUploadForm() {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="file">Archivo de video</FieldLabel>
-          <input id="file" type="file" accept="video/*" onChange={handleFileChange} disabled={isBusy} />
+
+          {!file ? (
+            <label
+              htmlFor="file"
+              className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/20 bg-white/5 px-6 py-4 text-center transition-colors hover:border-[var(--tb-glow)]/50 hover:bg-white/10 ${isBusy ? 'pointer-events-none opacity-50' : ''}`}
+            >
+              <UploadCloud className="h-6 w-6 text-[var(--tb-mist)]" />
+              <div>
+                <p className="font-medium text-[var(--tb-paper)]">Haz click para elegir un video</p>
+                <p className="text-sm text-[var(--tb-mist)]">MP4, MOV o WebM · hasta {MAX_FILE_SIZE_MB}MB</p>
+              </div>
+            </label>
+          ) : (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-white/20 bg-white/5 px-3 py-2">
+              <p className="truncate text-sm text-[var(--tb-paper)]">{file.name}</p>
+              <label
+                htmlFor="file"
+                className={`shrink-0 cursor-pointer text-sm text-[var(--tb-glow)] hover:underline ${isBusy ? 'pointer-events-none opacity-50' : ''}`}
+              >
+                Cambiar
+              </label>
+            </div>
+          )}
+
+          <input
+            id="file"
+            type="file"
+            accept="video/*"
+            onChange={handleFileChange}
+            disabled={isBusy}
+            className="hidden"
+          />
+
           {duration !== null && (
-            <p className="text-sm text-muted-foreground">
+            <p className="font-mono text-sm text-[var(--tb-ember)]">
               Duración detectada: {Math.floor(duration / 60)} min {duration % 60} seg
             </p>
           )}
