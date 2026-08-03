@@ -14,45 +14,48 @@ export function PublicProfileView({ profile, videos }: PublicProfileViewProps) {
   const displayName = profile.fullName ?? profile.username ?? '?';
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-10">
       <PageBackground src="/images/perfil.jpg" />
-      <div className="glass flex items-center gap-4 rounded-2xl p-6">
-        <div className="h-16 w-16 overflow-hidden rounded-full bg-muted text-xl font-semibold">
-          {profile.avatarUrl ? (
-            <Image
-              src={profile.avatarUrl}
-              alt={displayName}
-              width={64}
-              height={64}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
-          )}
+
+      <div className="glass flex flex-col gap-4 rounded-2xl p-6">
+        <div className="flex items-center gap-4">
+          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-muted text-xl font-semibold">
+            {profile.avatarUrl ? (
+              <Image
+                src={profile.avatarUrl}
+                alt={displayName}
+                width={64}
+                height={64}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          <div>
+            <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
+              {displayName}
+            </h1>
+            {profile.city && <p className="text-sm text-muted-foreground">{profile.city}</p>}
+          </div>
         </div>
-        <div>
-          <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-[var(--tb-paper)]">
-            {displayName}
-          </h1>
-          {profile.city && <p className="text-sm text-muted-foreground">{profile.city}</p>}
-        </div>
+
+        {profile.bio && <p className="text-sm text-[var(--tb-mist)]">{profile.bio}</p>}
+
+        {profile.skills.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {profile.skills.map((skill) => (
+              <span key={skill} className="rounded-full bg-white/10 px-3 py-1 text-xs text-[var(--tb-mist)]">
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {profile.bio && <p className="text-sm">{profile.bio}</p>}
-
-      {profile.skills.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {profile.skills.map((skill) => (
-            <span key={skill} className="glass rounded-full px-3 py-1 text-xs">
-              {skill}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <Separator />
+      <Separator className="border-white/15" />
 
       <div>
         <h2 className="mb-3 font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--tb-paper)]">
@@ -61,7 +64,7 @@ export function PublicProfileView({ profile, videos }: PublicProfileViewProps) {
         {videos.length === 0 ? (
           <p className="text-sm text-muted-foreground">Este usuario aún no ha compartido videos.</p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {videos.map((video) => (
               <VideoCard
                 key={video.id}
