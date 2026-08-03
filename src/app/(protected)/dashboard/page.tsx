@@ -12,37 +12,40 @@ export default async function DashboardPage() {
   const displayName = profile?.fullName || profile?.username || 'Usuario';
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10">
       <PageBackground src="/images/dashboard.jpg" />
-      <div className="glass flex items-center justify-between rounded-2xl p-4">
+
+      <div className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl p-6">
         <div>
-          <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-medium">
+          <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-medium text-[var(--tb-paper)]">
             Hola, {displayName}
           </p>
-          {profile?.bio && <p className="text-sm text-[var(--tb-mist)]">{profile.bio}</p>}
+          {profile?.bio && <p className="text-sm text-muted-foreground">{profile.bio}</p>}
         </div>
-        <Button size="sm" render={<Link href="/dashboard/videos/nuevo">Subir video</Link>} nativeButton={false} />
-      </div>
 
-      <div className="flex gap-3">
-        <Button
-          variant="outline"
-          size="sm"
-          render={<Link href="/dashboard/perfil">Editar perfil</Link>}
-          nativeButton={false}
-        />
-        {profile?.username && (
+        <div className="flex gap-3">
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={`/perfil/${profile.username}`}>Ver perfil público</Link>}
+            render={<Link href="/dashboard/perfil">Editar perfil</Link>}
             nativeButton={false}
           />
-        )}
+          {profile?.username && (
+            <Button
+              variant="outline"
+              size="sm"
+              render={<Link href={`/perfil/${profile.username}`}>Ver perfil público</Link>}
+              nativeButton={false}
+            />
+          )}
+          <Button size="sm" render={<Link href="/dashboard/videos/nuevo">Subir video</Link>} nativeButton={false} />
+        </div>
       </div>
 
       <div>
-        <p className="mb-2 text-sm font-medium">Tus videos</p>
+        <p className="mb-3 font-[family-name:var(--font-space-grotesk)] text-lg font-medium text-[var(--tb-paper)]">
+          Tus videos
+        </p>
         <MyVideosList videos={videos} />
       </div>
     </div>

@@ -39,18 +39,18 @@ export function MyVideosList({ videos }: { videos: Video[] }) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {videos.map((video) => (
-        <div key={video.id} className="glass flex gap-3 rounded-2xl p-3">
-          <div className="h-16 w-24 shrink-0 overflow-hidden rounded-md bg-muted">
+        <div key={video.id} className="glass flex flex-col gap-3 rounded-2xl p-3">
+          <div className="aspect-video w-full overflow-hidden rounded-md bg-muted">
             {video.thumbnailUrl && (
               <Image
-                src={video.thumbnailUrl}
-                alt={video.title}
-                width={96}
-                height={64}
-                className="h-full w-full object-cover"
-              />
+              src={video.thumbnailUrl}
+              alt={video.title}
+              width={320}
+              height={180}
+              className="h-full w-full object-cover"
+            />
             )}
           </div>
           <div className="flex flex-1 flex-col gap-1">

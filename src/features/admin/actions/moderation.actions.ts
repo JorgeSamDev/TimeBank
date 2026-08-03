@@ -31,9 +31,14 @@ export async function getReportedVideos(): Promise<ReportedVideo[]> {
 
   if (!reports) return [];
 
+  const activeReports = reports.filter((r) => {
+    const video = Array.isArray(r.videos) ? r.videos[0] : r.videos;
+    return video?.status === 'active';
+  });
+
   const grouped = new Map<string, ReportedVideo>();
 
-  for (const report of reports) {
+  for (const report of activeReports) {
     const video = Array.isArray(report.videos) ? report.videos[0] : report.videos;
     if (!video) continue;
 

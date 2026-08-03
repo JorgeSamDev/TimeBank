@@ -54,6 +54,7 @@ export default async function VideoPage({ params }: PageProps) {
   if (!chargeResult.success) {
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-10 text-center">
+        <PageBackground src="/images/video.jpg" />
         <p className="font-medium">No tienes créditos suficientes</p>
         <p className="text-sm text-muted-foreground">{chargeResult.error}</p>
         <Link href="/dashboard/videos/nuevo" className="text-sm underline">
@@ -67,6 +68,7 @@ export default async function VideoPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-10">
+      <PageBackground src="/images/video.jpg" />
       <video
         src={video.videoUrl}
         poster={video.thumbnailUrl ?? undefined}
