@@ -89,7 +89,17 @@ export default function TermsPage() {
         </section>
 
         <section className="flex flex-col gap-2">
-          <h2 className="font-semibold text-[var(--tb-paper)]">7. Limitación de responsabilidad</h2>
+          <h2 className="font-semibold text-[var(--tb-paper)]">7. Edad mínima para el uso de la plataforma</h2>
+          <p>
+            Para utilizar TimeBank, el usuario debe tener al menos 13 años o la edad mínima establecida
+            por la legislación aplicable en su país de residencia. Si el usuario es menor de 18 años, 
+            declara contar con el consentimiento de su padre, madre o tutor legal para utilizar la plataforma.
+          </p>
+        </section>
+
+
+        <section className="flex flex-col gap-2">
+          <h2 className="font-semibold text-[var(--tb-paper)]">8. Limitación de responsabilidad</h2>
           <p>
             TimeBank se proporciona &quot;tal cual&quot;, sin garantías de ningún tipo. No garantizamos que
             el contenido subido por los usuarios sea preciso, seguro o de calidad. TimeBank no será
@@ -99,7 +109,7 @@ export default function TermsPage() {
         </section>
 
         <section className="flex flex-col gap-2">
-          <h2 className="font-semibold text-[var(--tb-paper)]">8. Terminación de cuenta</h2>
+          <h2 className="font-semibold text-[var(--tb-paper)]">9. Terminación de cuenta</h2>
           <p>
             Puedes cerrar tu cuenta en cualquier momento. TimeBank puede suspender o terminar tu
             acceso a la plataforma si incumples estos Términos y Condiciones, de acuerdo con la
@@ -108,7 +118,7 @@ export default function TermsPage() {
         </section>
 
         <section className="flex flex-col gap-2">
-          <h2 className="font-semibold text-[var(--tb-paper)]">9. Cambios a estos términos</h2>
+          <h2 className="font-semibold text-[var(--tb-paper)]">10. Cambios a estos términos</h2>
           <p>
             Podemos actualizar estos Términos y Condiciones ocasionalmente. Los cambios entrarán en
             vigor al ser publicados en esta página. El uso continuo de TimeBank después de una
@@ -117,7 +127,7 @@ export default function TermsPage() {
         </section>
 
         <section className="flex flex-col gap-2">
-          <h2 className="font-semibold text-[var(--tb-paper)]">10. Contacto</h2>
+          <h2 className="font-semibold text-[var(--tb-paper)]">11. Contacto</h2>
           <p>
             Si tienes preguntas sobre estos Términos y Condiciones, puedes contactarnos a través de
             los canales de soporte disponibles en la plataforma.
