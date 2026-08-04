@@ -1,13 +1,17 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PageBackground } from '@/components/shared/page-background';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="h-screen overflow-hidden">
       <PageBackground src="/images/landing.jpg" />
-      {/* Hero */}
-      <section className="container mx-auto flex min-h-screen flex-col items-center justify-center px-6 text-center">
+
+      <section className="container mx-auto flex h-full flex-col items-center justify-center px-6 text-center">
+        <Image src="/icon.png" alt="TimeBank" width={180} height={180} className="mb-6 rounded-3xl" />
+
         <span className="glass rounded-full px-4 py-1 text-sm text-[var(--tb-mist)]">
           Bienvenido a TimeBank
         </span>
@@ -30,12 +34,15 @@ export default function Home() {
             nativeButton={false}
           />
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="glass py-8 text-center text-sm text-[var(--tb-mist)]">
-        © {new Date().getFullYear()} TimeBank · Plataforma de intercambio de conocimientos.
-      </footer>
+        <Link
+          href="/catalogo"
+          className="mt-6 flex items-center gap-2 text-sm text-[var(--tb-mist)] transition-colors hover:text-[var(--tb-tide)]"
+        >
+          Explorar el catálogo sin registrarme
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
     </main>
   );
 }

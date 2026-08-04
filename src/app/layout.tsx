@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google';
 import { SiteHeader } from '@/components/shared/site-header';
 import './globals.css';
+import { ConditionalHeader } from '@/components/shared/conditional-header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,7 +35,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
+        <ConditionalHeader>
+          <SiteHeader />
+        </ConditionalHeader>
         <main className="relative flex-1">{children}</main>
       </body>
     </html>
