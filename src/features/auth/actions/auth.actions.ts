@@ -52,7 +52,7 @@ export async function signIn(input: SignInInput): Promise<ActionResult> {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/dashboard');
+  redirect('/catalogo');
 }
 
 export async function signOut(): Promise<void> {
