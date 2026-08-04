@@ -69,6 +69,7 @@ export async function getMyVideos(): Promise<Video[]> {
     .from('videos')
     .select('id, owner_id, title, description, category, video_url, thumbnail_url, duration_seconds, status, created_at')
     .eq('owner_id', user.id)
+    .neq('status', 'removed')
     .order('created_at', { ascending: false });
 
   if (error || !data) {
@@ -220,4 +221,59 @@ export async function getVideosByOwner(ownerId: string): Promise<Video[]> {
     status: v.status,
     createdAt: v.created_at,
   }));
+}
+export async function updateVideo(
+  videoId: string,
+  input: Pick<CreateVideoInput, 'title' | 'description' | 'category'>,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'Debes iniciar sesión' };
+  }
+
+  const { error } = await supabase
+    .from('videos')
+    .update({
+      title: input.title,
+      description: input.description || null,
+      category: input.category,
+    })
+    .eq('id', videoId)
+    .eq('owner_id', user.id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath('/dashboard');
+  return { success: true };
+}
+
+export async function deleteMyVideo(videoId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'Debes iniciar sesión' };
+  }
+
+  const { error } = await supabase
+    .from('videos')
+    .update({ status: 'removed' })
+    .eq('id', videoId)
+    .eq('owner_id', user.id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath('/dashboard');
+  revalidatePath('/catalogo');
+  return { success: true };
 }
