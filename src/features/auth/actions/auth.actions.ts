@@ -20,7 +20,7 @@ export async function signUp(input: SignUpInput): Promise<ActionResult> {
   const { fullName, email, password } = parsed.data;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { data: signUpData, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -30,6 +30,13 @@ export async function signUp(input: SignUpInput): Promise<ActionResult> {
 
   if (error) {
     return { success: false, error: error.message };
+  }
+
+  if (signUpData.user) {
+    await supabase
+      .from('profiles')
+      .update({ terms_accepted_at: new Date().toISOString() })
+      .eq('id', signUpData.user.id);
   }
 
   return { success: true };

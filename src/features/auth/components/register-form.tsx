@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { signUp } from '../actions/auth.actions';
 import { signUpSchema, type SignUpInput } from '../schemas/auth.schema';
@@ -21,6 +22,7 @@ export function RegisterForm() {
       email: '',
       password: '',
       confirmPassword: '',
+      acceptedTerms: false as unknown as true,
     },
   });
 
@@ -53,12 +55,7 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="fullName">Nombre completo</FieldLabel>
-              <Input
-                {...field}
-                id="fullName"
-                aria-invalid={fieldState.invalid}
-                autoComplete="name"
-              />
+              <Input {...field} id="fullName" aria-invalid={fieldState.invalid} autoComplete="name" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -70,13 +67,7 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="email">Correo electrónico</FieldLabel>
-              <Input
-                {...field}
-                id="email"
-                type="email"
-                aria-invalid={fieldState.invalid}
-                autoComplete="email"
-              />
+              <Input {...field} id="email" type="email" aria-invalid={fieldState.invalid} autoComplete="email" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -113,6 +104,30 @@ export function RegisterForm() {
                 aria-invalid={fieldState.invalid}
                 autoComplete="new-password"
               />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="acceptedTerms"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="acceptedTerms"
+                  checked={field.value === true}
+                  onCheckedChange={(checked) => field.onChange(checked === true)}
+                />
+                <label htmlFor="acceptedTerms" className="text-sm text-[var(--tb-mist)]">
+                  Acepto los{' '}
+                  <Link href="/terminos" target="_blank" className="text-[var(--tb-glow)] underline">
+                    Términos y Condiciones
+                  </Link>{' '}
+                  de TimeBank.
+                </label>
+              </div>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

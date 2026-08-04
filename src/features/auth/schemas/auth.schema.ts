@@ -6,11 +6,15 @@ export const signUpSchema = z
     email: z.email('Correo electrónico inválido'),
     password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
     confirmPassword: z.string(),
+    acceptedTerms: z.literal(true, {
+      message: 'Debes aceptar los Términos y Condiciones para continuar',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas no coinciden',
     path: ['confirmPassword'],
   });
+  
 
 export const signInSchema = z.object({
   email: z.email('Correo electrónico inválido'),
