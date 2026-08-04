@@ -103,3 +103,42 @@ export async function chargeForView(videoId: string, durationSeconds: number): P
     error: `Necesitas ${costHours.toFixed(2)} horas de crédito. Tienes ${balance.toFixed(2)}.`,
   };
 }
+export type CreditTransaction = {
+  id: string;
+  amountHours: number;
+  type: 'video_upload' | 'video_view' | 'free_view';
+  videoTitle: string | null;
+  createdAt: string;
+};
+
+export async function getMyTransactions(): Promise<CreditTransaction[]> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('credit_transactions')
+    .select('id, amount_hours, type, created_at, videos(title)')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((tx) => {
+    const video = Array.isArray(tx.videos) ? tx.videos[0] : tx.videos;
+    return {
+      id: tx.id,
+      amountHours: Number(tx.amount_hours),
+      type: tx.type,
+      videoTitle: video?.title ?? null,
+      createdAt: tx.created_at,
+    };
+  });
+}
